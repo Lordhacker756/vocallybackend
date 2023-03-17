@@ -6,6 +6,7 @@ const postUser = async (req, res) => {
     const user = await User.create({ name, email });
     res.status(201).json({ msg: "User Registered..!", user: user });
   } catch (error) {
+    console.log(error);
     res.status(401).json({ msg: "User Registration failed.." });
   }
 };
