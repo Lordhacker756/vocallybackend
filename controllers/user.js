@@ -1,42 +1,41 @@
 const User = require("../models/user");
 const postUser = async (req, res) => {
-  console.log(req.body);
-  User.findOne({
-    $or: [
-      {
-        email: req.body.email,
-      },
-      {
-        username: req.body.name,
-      },
-    ],
-  })
-    .then((user) => {
-      if (user) {
-        let errors = {};
-        if (user.name === req.body.name) {
-          errors.name = "User Name already exists";
-        } else {
-          errors.email = "Email already exists";
-        }
-        return res.status(400).json(errors);
-      } else {
-        const newUser = new User({
-          name: req.body.name,
+  try {
+    const existingUser = await User.findOne({
+      $or: [
+        {
           email: req.body.email,
-        });
-
-        newUser
-          .save()
-          .then((user) => res.json(user))
-          .catch((err) => console.log(err));
-      }
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        error: err,
-      });
+        },
+        {
+          name: req.body.name,
+        },
+      ],
     });
+
+    if (existingUser) {
+      let errors = {};
+      if (existingUser.name === req.body.name) {
+        errors.name = "Username already exists";
+      } else {
+        errors.email = "Email already exists";
+      }
+      return res.status(400).json(errors);
+    }
+
+    const newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+    });
+
+    const user = await newUser.save();
+    return res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: "Internal server error",
+    });
+  }
 };
+
 const getUser = (req, res) => {};
 module.exports = { postUser, getUser };
