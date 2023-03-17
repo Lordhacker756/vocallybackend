@@ -14,11 +14,8 @@ const postUser = async (req, res) => {
 
     if (existingUser) {
       let errors = {};
-      if (
-        existingUser.name === req.body.name &&
-        existingUser.email === req.body.email
-      ) {
-        errors.name = "Username already exists";
+      if (existingUser.email === req.body.email) {
+        errors.name = "User already exists";
       }
       return res.status(400).json(errors);
     }
