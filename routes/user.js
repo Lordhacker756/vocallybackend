@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { postUser, getUser } = require("../controllers/user");
-router.route("/user").post(postUser).get(getUser);
+const { postUser } = require("../controllers/user");
+
+// Route to handle the POST request to /user
+router.route("/user").post(postUser);
 module.exports = router;

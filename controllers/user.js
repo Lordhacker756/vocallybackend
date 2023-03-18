@@ -1,23 +1,12 @@
 const User = require("../models/user");
+
+// Controller to handle the POST request to /user
 const postUser = async (req, res) => {
   try {
-    const existingUser = await User.findOne({
-      $or: [
-        {
-          email: req.body.email,
-        },
-        {
-          name: req.body.name,
-        },
-      ],
-    });
+    let existingUser = await User.findOne({ email: req.body.email });
 
     if (existingUser) {
-      let errors = {};
-      if (existingUser.email === req.body.email) {
-        errors.name = "User already exists";
-      }
-      return res.status(400).json(errors);
+      return res.status(400).json({ name: "User already exists" });
     }
 
     const newUser = new User({
@@ -35,5 +24,4 @@ const postUser = async (req, res) => {
   }
 };
 
-const getUser = (req, res) => {};
-module.exports = { postUser, getUser };
+module.exports = { postUser };
